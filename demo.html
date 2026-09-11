@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET & TNPSC Study Hall — Demo</title>
+<style>
+  :root {
+    --ink: #1B2436;
+    --paper: #F6F3EC;
+    --navy: #1E2A4A;
+    --navy2: #2C3B63;
+    --gold: #C08A2E;
+    --goldLight: #E4B658;
+    --line: #DAD3C0;
+    --ok: #3D7A55;
+    --err: #B0433B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-image: linear-gradient(rgba(27,36,54,0.03) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; margin: 0; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* Demo banner */
+  .demo-banner {
+    background: var(--gold);
+    color: var(--navy);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px;
+  }
+
+  /* Auth screens */
+  .auth-wrap {
+    min-height: calc(100vh - 30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .auth-box { width: 100%; max-width: 380px; }
+  .auth-header { text-align: center; margin-bottom: 28px; }
+  .auth-header h1 { font-size: 26px; color: var(--navy); }
+  .auth-header p { font-size: 13px; color: rgba(27,36,54,0.6); margin-top: 4px; }
+  .card {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.6);
+    border-radius: 3px;
+    padding: 24px;
+  }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .field { margin-bottom: 16px; }
+  input[type="text"], input[type="password"], select {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.8);
+    padding: 10px 14px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .btn {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    padding: 11px 20px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+  }
+  .btn-primary { background: var(--navy); color: var(--paper); width: 100%; }
+  .btn-primary:hover { background: var(--navy2); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--goldLight); }
+  .switch-line { text-align: center; font-size: 13px; margin-top: 18px; color: rgba(27,36,54,0.6); }
+  .switch-line a { color: var(--navy); text-decoration: underline; cursor: pointer; }
+
+  /* Nav */
+  .nav {
+    background: var(--navy);
+    color: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .nav-title h1 { font-size: 18px; letter-spacing: 0.02em; }
+  .nav-title p { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.6; margin-top: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+  .badge {
+    color: var(--gold); border: 1px solid rgba(192,138,46,0.5);
+    border-radius: 3px; padding: 1px 6px; font-size: 10px; margin-left: 6px;
+  }
+  .nav-right a { color: var(--paper); text-decoration: underline; text-decoration-color: rgba(192,138,46,0.5); cursor: pointer; }
+  .nav-right button { background: none; border: none; color: rgba(246,243,236,0.7); cursor: pointer; font-size: 13px; }
+
+  main.container { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+
+  .upgrade-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 16px; margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .upgrade-banner p { font-size: 14px; color: rgba(27,36,54,0.75); }
+
+  section.category { margin-bottom: 26px; }
+  .cat-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .cat-head h2 { font-size: 17px; color: var(--navy); }
+  .cat-head span { font-size: 11px; color: rgba(27,36,54,0.4); }
+  .file-list { list-style: none; margin: 0; padding: 0; }
+  .file-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--line);
+  }
+  .file-list li:last-child { border-bottom: none; }
+  .file-title { font-size: 14px; }
+  .file-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(27,36,54,0.4); margin-top: 2px; }
+  .lock-chip {
+    font-size: 11px; color: var(--gold); border: 1px solid rgba(192,138,46,0.4);
+    border-radius: 3px; padding: 6px 10px;
+  }
+  .empty { font-size: 13px; color: rgba(27,36,54,0.4); font-style: italic; }
+
+  /* Admin */
+  .admin-wrap { max-width: 480px; margin: 0 auto; padding: 28px 20px; }
+  .admin-wrap h2 { font-size: 19px; color: var(--navy); margin-bottom: 18px; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 16px; }
+  .status-ok { color: var(--ok); font-size: 13px; margin-top: 6px; display: none; }
+  .file-input { font-size: 13px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--navy); color: var(--paper); padding: 12px 22px; border-radius: 4px;
+    font-size: 13px; opacity: 0; transition: all 0.25s ease; pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(27,36,54,0.55);
+    align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--paper); border-radius: 4px; padding: 26px; max-width: 340px; width: 100%;
+    border: 1px solid var(--line);
+  }
+  .modal h3 { font-size: 17px; color: var(--navy); margin-bottom: 8px; }
+  .modal p { font-size: 13px; color: rgba(27,36,54,0.7); margin-bottom: 18px; }
+  .modal .row { display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">DEMO MODE — mock data, no real login/upload happens</div>
+
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h1>Study Hall</h1>
+        <p>TET &amp; TNPSC Materials</p>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" value="student01" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" value="••••••••" />
+        </div>
+        <button class="btn btn-primary" onclick="go('screen-home'); toast('Logged in as student01')">Sign in</button>
+      </div>
+      <p class="switch-line">Account illaya? <a onclick="go('screen-signup')">Signup pannunga</a></p>
+      <p class="switch-line" style="margin-top:6px;">Admin ah try pannanuma? <a onclick="loginAsAdmin()">Admin login demo</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="screen" id="screen-signup">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h1>Create account</h1>
+        <p>TET &amp; TNPSC Materials</p>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" placeholder="e.g. tnpsc_aspirant" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" placeholder="min 6 characters" />
+        </div>
+        <div class="field">
+          <label>Confirm password</label>
+          <input type="password" placeholder="" />
+        </div>
+        <button class="btn btn-primary" onclick="go('screen-home'); toast('Account created — logged in')">Create account</button>
+      </div>
+      <p class="switch-line">Already account irukka? <a onclick="go('screen-login')">Login pannunga</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="screen-home">
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="nav-title">
+        <h1>TET &amp; TNPSC Study Hall</h1>
+        <p>Notes · Papers · Materials</p>
+      </div>
+      <div class="nav-right">
+        <span id="home-username">student01</span>
+        <a id="admin-link" style="display:none" onclick="go('screen-admin')">Upload panel</a>
+        <button onclick="go('screen-login')">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <main class="container">
+    <div class="card upgrade-banner" id="upgrade-banner">
+      <p>Premium materials access panna, upgrade pannunga.</p>
+      <button class="btn btn-gold" onclick="openUpgrade()">Upgrade to Premium</button>
+    </div>
+
+    <section class="category">
+      <div class="cat-head"><h2>TNPSC Group 4</h2><span>3 files</span></div>
+      <ul class="card file-list">
+        <li>
+          <div><div class="file-title">General Studies Unit 3 — Notes</div><div class="file-type">PDF</div></div>
+          <button class="btn btn-gold" onclick="toast('Download started (demo)')">Download</button>
+        </li>
+        <li>
+          <div><div class="file-title">Model Question Paper 2026 ★</div><div class="file-type">PDF</div></div>
+          <span class="lock-chip" onclick="openUpgrade()" style="cursor:pointer">🔒 Premium</span>
+        </li>
+        <li>
+          <div><div class="file-title">Tamil Grammar Chart</div><div class="file-type">Image</div></div>
+          <button class="btn btn-gold" onclick="toast('Download started (demo)')">Download</button>
+        </li>
+      </ul>
+    </section>
+
+    <section class="category">
+      <div class="cat-head"><h2>TET Paper 1</h2><span>2 files</span></div>
+      <ul class="card file-list">
+        <li>
+          <div><div class="file-title">Child Development — Full Notes</div><div class="file-type">Word</div></div>
+          <button class="btn btn-gold" onclick="toast('Download started (demo)')">Download</button>
+        </li>
+        <li>
+          <div><div class="file-title">2025 Previous Year Paper ★</div><div class="file-type">PDF</div></div>
+          <span class="lock-chip" onclick="openUpgrade()" style="cursor:pointer">🔒 Premium</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="category">
+      <div class="cat-head"><h2>Current Affairs</h2><span>0 files</span></div>
+      <p class="empty">Innum files upload aagala.</p>
+    </section>
+  </main>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="nav-title">
+        <h1>TET &amp; TNPSC Study Hall</h1>
+        <p>Notes · Papers · Materials</p>
+      </div>
+      <div class="nav-right">
+        <span>admin_raj<span class="badge">ADMIN</span></span>
+        <a onclick="go('screen-home')">Home</a>
+        <button onclick="go('screen-login')">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <div class="admin-wrap">
+    <h2>Upload material</h2>
+    <div class="card">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" placeholder="e.g. TNPSC Group 4 - Unit 3 Notes" />
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select>
+          <option>TET Paper 1</option>
+          <option>TET Paper 2</option>
+          <option>TNPSC Group 1</option>
+          <option>TNPSC Group 2</option>
+          <option selected>TNPSC Group 4</option>
+          <option>General Tamil</option>
+          <option>Current Affairs</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>File (PDF / Word / Image)</label>
+        <input class="file-input" type="file" />
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="premium-check" />
+        <label for="premium-check" style="margin:0">Premium file (paid users mattum download panna mudiyum)</label>
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="uploadDemo()">Upload</button>
+      <p class="status-ok" id="upload-status">Upload success!</p>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade modal -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal">
+    <h3>Upgrade to Premium</h3>
+    <p>₹199 — Razorpay checkout opens here (UPI / card / netbanking). Demo mode la real payment nadakathu.</p>
+    <div class="row">
+      <button class="btn btn-gold" style="flex:1" onclick="closeUpgrade(); toast('Payment successful (demo) — premium unlocked')">Pay ₹199</button>
+      <button class="btn" style="flex:1; background:var(--line); color:var(--ink)" onclick="closeUpgrade()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function go(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+  function loginAsAdmin() {
+    document.getElementById('home-username').innerHTML = 'admin_raj <span class="badge">ADMIN</span>';
+    document.getElementById('admin-link').style.display = 'inline';
+    go('screen-home');
+    toast('Logged in as admin_raj');
+  }
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function openUpgrade() { document.getElementById('upgrade-modal').classList.add('show'); }
+  function closeUpgrade() { document.getElementById('upgrade-modal').classList.remove('show'); }
+  function uploadDemo() {
+    document.getElementById('upload-status').style.display = 'block';
+    setTimeout(() => { document.getElementById('upload-status').style.display = 'none'; }, 2500);
+  }
+</script>
+</body>
+</html>
